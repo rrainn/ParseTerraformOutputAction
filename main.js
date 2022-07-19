@@ -1,7 +1,7 @@
 const core = require("@actions/core");
 const fs = require("fs").promises;
 
-const settings = ["outputFilePath", "variables"/*, "secrets"*/].reduce((obj, key) => {
+const settings = ["outputFilePath", "variables", "secrets"].reduce((obj, key) => {
 	obj[key] = core.getInput(key);
 	return obj;
 }, {});
