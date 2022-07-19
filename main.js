@@ -10,7 +10,7 @@ const settings = ["outputFilePath", "variables", "secrets"].reduce((obj, key) =>
 	const outputFile = await fs.readFile(settings.outputFilePath, "utf8");
 	const outputJSON = JSON.parse(outputFile);
 
-	settings.variables.forEach((variable) => {
+	settings.variables.split(",").forEach((variable) => {
 		const value = outputJSON[variable].value;
 		core.setOutput(variable, value);
 	});

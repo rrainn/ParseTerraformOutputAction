@@ -6,11 +6,11 @@ inputs:
     required: true
   variables:
     description: 'The array of variables you wish to parse.'
-    default: []
+    default: ''
     required: true
   secrets:
     description: 'The array of secrets you wish to parse.'
-    default: []
+    default: ''
     required: true
 runs:
   using: 'node16'
