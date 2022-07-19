@@ -1,5 +1,6 @@
 const core = require("@actions/core");
 const fs = require("fs").promises;
+const execCmd = require("child_process").exec;
 
 const settings = ["outputFilePath", "variables", "secrets"].reduce((obj, key) => {
 	obj[key] = core.getInput(key);
@@ -15,5 +16,25 @@ const settings = ["outputFilePath", "variables", "secrets"].reduce((obj, key) =>
 		core.setOutput(variable, value);
 	});
 
+	settings.secrets.split(",").forEach((variable) => {
+		const encryptedValue = outputJSON[variable].value;
+		const value = await exec(`echo ${encryptedValue} | base64 --decode | gpg -d -q`);
+
+		core.setSecret(value);
+		core.setOutput(variable, value);
+	});
+
 	await fs.unlink(settings.outputFilePath);
 })();
+
+function exec(cmd) {
+	return new Promise((resolve, reject) => {
+		execCmd(cmd, (error, stdout, stderr) => {
+			if (error) {
+				reject(error);
+			} else {
+				resolve(stdout);
+			}
+		});
+	});
+}
