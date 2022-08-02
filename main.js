@@ -11,7 +11,14 @@ const settings = ["outputFilePath", "variables", "secrets"].reduce((obj, key) =>
 	const outputFile = await fs.readFile(settings.outputFilePath, "utf8");
 	const outputJSON = JSON.parse(outputFile);
 
+	if (!outputJSON) {
+		console.error("No output JSON");
+	}
+
 	settings.variables.split(",").forEach((variable) => {
+		if (!outputJSON[variable]) {
+			console.error(`No variable: ${variable} inside of outputJSON: ${JSON.stringify(outputJSON, null, "\t")}`);
+		}
 		const value = outputJSON[variable].value;
 		core.setOutput(variable, value);
 	});
